@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dear You - Anonymous Wishboard</title>
+
+    <meta name="description"
+          content="Tempat berbagi pesan, harapan, dan ucapan secara anonim.">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="decor decor-one">♡</div>
+    <div class="decor decor-two">✦</div>
+    <div class="decor decor-three">☁</div>
+
+    <header class="navbar">
+        <a href="#" class="brand">
+            <span class="brand-icon">♡</span>
+            <span>dear you<span class="brand-dot">.</span></span>
+        </a>
+
+        <nav>
+            <a href="#home">Beranda</a>
+            <a href="#kirim">Tulis Pesan</a>
+            <a href="#papan">Papan Pesan</a>
+        </nav>
+
+        <a href="#kirim" class="nav-button">Kirim pesan ✧</a>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section class="hero" id="home">
+            <div class="hero-badge">
+                <span class="status-dot"></span>
+                A LITTLE CORNER FOR YOUR HEART
+            </div>
+
+            <h1>
+                Ada yang ingin<br>
+                kamu <span class="highlight">sampaikan?</span>
+            </h1>
+
+            <p class="hero-description">
+                Tulis harapan, ucapan terima kasih, pesan manis,
+                atau cerita kecil yang ingin kamu bagikan.
+                Tidak perlu menyebutkan nama.
+            </p>
+
+            <div class="hero-actions">
+                <a href="#kirim" class="button button-primary">
+                    ✉ Tulis pesan sekarang
+                </a>
+
+                <a href="#papan" class="button button-secondary">
+                    Lihat papan ↓
+                </a>
+            </div>
+
+            <div class="hero-note">
+                <span>♡</span>
+                Your words matter, even when no one knows it's you.
+            </div>
+
+            <div class="hero-sticker sticker-left">૮ ˶ᵔ ᵕ ᵔ˶ ა</div>
+            <div class="hero-sticker sticker-right">love u ♡</div>
+        </section>
+
+        <!-- STATISTIK -->
+        <section class="stats">
+            <div class="stat-item">
+                <span class="stat-icon">💌</span>
+                <div>
+                    <strong id="totalMessages">0</strong>
+                    <span>Pesan terkirim</span>
+                </div>
+            </div>
+
+            <div class="stat-divider"></div>
+
+            <div class="stat-item">
+                <span class="stat-icon">💗</span>
+                <div>
+                    <strong id="totalLikes">0</strong>
+                    <span>Apresiasi</span>
+                </div>
+            </div>
+
+            <div class="stat-divider"></div>
+
+            <div class="stat-item">
+                <span class="stat-icon">🌷</span>
+                <div>
+                    <strong>∞</strong>
+                    <span>Ruang untuk berbagi</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- FORM KIRIM PESAN -->
+        <section class="write-section section-container" id="kirim">
+            <div class="section-heading">
+                <span class="eyebrow">✧ YOUR LITTLE SPACE ✧</span>
+                <h2>Tinggalkan sedikit <span>cerita.</span></h2>
+                <p>Siapa pun kamu, ceritamu diterima di sini.</p>
+            </div>
+
+            <div class="form-card">
+                <div class="form-top">
+                    <div>
+                        <span class="mini-label">NEW MESSAGE</span>
+                        <h3>Untuk siapa saja yang perlu membacanya ♡</h3>
+                    </div>
+                    <span class="envelope-icon">💌</span>
+                </div>
+
+                <form id="messageForm">
+                    <div class="field-group">
+                        <label for="senderName">Nama pengirim</label>
+
+                        <div class="name-input-wrap">
+                            <input
+                                type="text"
+                                id="senderName"
+                                maxlength="30"
+                                placeholder="Tulis nama atau nama samaran..."
+                                autocomplete="off"
+                            >
+
+                            <label class="anonymous-toggle">
+                                <input type="checkbox" id="anonymous" checked>
+                                <span>Anonim</span>
+                            </label>
+                        </div>
+
+                        <small>Nama asli tidak wajib diisi.</small>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="category">Jenis pesan</label>
+
+                        <select id="category" required>
+                            <option value="Harapan">🌠 Harapan</option>
+                            <option value="Terima Kasih">💗 Terima kasih</option>
+                            <option value="Penyemangat">🌷 Penyemangat</option>
+                            <option value="Curhat">☁ Curhat singkat</option>
+                            <option value="Pesan Rahasia">💌 Pesan rahasia</option>
+                            <option value="Persahabatan">🧸 Persahabatan</option>
+                        </select>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="label-row">
+                            <label for="messageText">Isi pesan kamu</label>
+                            <span id="charCount">0 / 500</span>
+                        </div>
+
+                        <textarea
+                            id="messageText"
+                            maxlength="500"
+                            rows="5"
+                            placeholder="Tulis apa yang ingin kamu sampaikan di sini..."
+                            required
+                        ></textarea>
+
+                        <small>Minimal 3 karakter, maksimal 500 karakter.</small>
+                    </div>
+
+                    <div class="field-group">
+                        <label>Pilih warna kartu</label>
+
+                        <div class="color-options">
+                            <label class="color-choice">
+                                <input type="radio" name="cardColor"
+                                       value="pink" checked>
+                                <span class="color-swatch swatch-pink"></span>
+                                <span>Pink</span>
+                            </label>
+
+                            <label class="color-choice">
+                                <input type="radio" name="cardColor"
+                                       value="lavender">
+                                <span class="color-swatch swatch-lavender"></span>
+                                <span>Lavender</span>
+                            </label>
+
+                            <label class="color-choice">
+                                <input type="radio" name="cardColor"
+                                       value="cream">
+                                <span class="color-swatch swatch-cream"></span>
+                                <span>Cream</span>
+                            </label>
+
+                            <label class="color-choice">
+                                <input type="radio" name="cardColor"
+                                       value="mint">
+                                <span class="color-swatch swatch-mint"></span>
+                                <span>Mint</span>
+                            </label>
+
+                            <label class="color-choice">
+                                <input type="radio" name="cardColor"
+                                       value="blue">
+                                <span class="color-swatch swatch-blue"></span>
+                                <span>Baby blue</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="sticker">Tambahkan stiker</label>
+
+                        <select id="sticker">
+                            <option value="♡">♡ Hati</option>
+                            <option value="🌷">🌷 Bunga</option>
+                            <option value="🧸">🧸 Beruang</option>
+                            <option value="⭐">⭐ Bintang</option>
+                            <option value="☁️">☁️ Awan</option>
+                            <option value="🦋">🦋 Kupu-kupu</option>
+                            <option value="🌈">🌈 Pelangi</option>
+                            <option value="💌">💌 Surat</option>
+                        </select>
+                    </div>
+
+                    <label class="privacy-note">
+                        <input type="checkbox" id="agreeRules" required>
+                        <span>
+                            Saya setuju untuk tidak mengirim pesan yang
+                            berisi hinaan, ancaman, data pribadi, atau
+                            konten yang merugikan orang lain.
+                        </span>
+                    </label>
+
+                    <button type="submit" class="button button-primary submit-button">
+                        Kirim ke papan ♡
+                    </button>
+
+                    <p class="form-footnote">
+                        ✧ Pesan tersimpan di browser ini, bukan di server publik.
+                    </p>
+                </form>
+            </div>
+        </section>
+
+        <!-- PAPAN PESAN -->
+        <section class="board-section section-container" id="papan">
+            <div class="section-heading">
+                <span class="eyebrow">✧ WALL OF LITTLE THOUGHTS ✧</span>
+                <h2>Papan pesan <span>kita.</span></h2>
+                <p>Kumpulan kata kecil yang mungkin berarti besar.</p>
+            </div>
+
+            <div class="board-tools">
+                <div class="search-wrap">
+                    <span>⌕</span>
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="Cari pesan..."
+                    >
+                </div>
+
+                <select id="filterCategory" aria-label="Filter kategori">
+                    <option value="Semua">Semua pesan</option>
+                    <option value="Harapan">Harapan</option>
+                    <option value="Terima Kasih">Terima kasih</option>
+                    <option value="Penyemangat">Penyemangat</option>
+                    <option value="Curhat">Curhat singkat</option>
+                    <option value="Pesan Rahasia">Pesan rahasia</option>
+                    <option value="Persahabatan">Persahabatan</option>
+                </select>
+
+                <select id="sortMessages" aria-label="Urutan pesan">
+                    <option value="newest">Terbaru</option>
+                    <option value="oldest">Terlama</option>
+                    <option value="popular">Paling disukai</option>
+                </select>
+            </div>
+
+            <div class="board-info">
+                <span id="resultCount">0 pesan ditemukan</span>
+                <span>Made with ♡ and kindness</span>
+            </div>
+
+            <div class="message-grid" id="messageGrid"></div>
+
+            <div class="empty-state" id="emptyState">
+                <div class="empty-illustration">💌</div>
+                <h3>Belum ada pesan di sini...</h3>
+                <p>Jadilah orang pertama yang meninggalkan kata manis.</p>
+                <a href="#kirim" class="button button-primary">
+                    Tulis pesan pertama
+                </a>
+            </div>
+
+            <div class="board-footer">
+                <span>♡ Every message deserves kindness.</span>
+                <span id="storageInfo">Papan lokal · Browser ini</span>
+            </div>
+        </section>
+
+        <!-- PESAN PENUTUP -->
+        <section class="closing-section">
+            <div class="closing-card">
+                <span class="closing-decoration">✧･ﾟ: *✧･ﾟ:*</span>
+                <div class="closing-heart">♡</div>
+                <h2>Kadang, kata sederhana<br>cukup untuk menghangatkan hati.</h2>
+                <p>
+                    Terima kasih sudah menjadi bagian kecil
+                    dari ruang penuh cerita ini.
+                </p>
+                <a href="#kirim" class="button button-primary">
+                    Kirim pesan lainnya ✉
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <a href="#home" class="brand">
+            <span class="brand-icon">♡</span>
+            <span>dear you<span class="brand-dot">.</span></span>
+        </a>
+
+        <p>A tiny space for words that matter.</p>
+        <span>© <span id="currentYear"></span> Dear You. Made with love ♡</span>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
