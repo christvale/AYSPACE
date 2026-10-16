@@ -1,4 +1,31 @@
-"use strict";
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    onSnapshot,
+    doc,
+    updateDoc,
+    deleteDoc,
+    query,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyC42YozqHyAiR2edeJW3NhL-mtn7geWqHg",
+  authDomain: "ayspaces-b4ded.firebaseapp.com",
+  projectId: "ayspaces-b4ded",
+  storageBucket: "ayspaces-b4ded.firebasestorage.app",
+  messagingSenderId: "254478952560",
+  appId: "1:254478952560:web:a2e7ac8b65d74171362cb5",
+  measurementId: "G-Q9RCMGKE27"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 /* =========================================
    1. PENGATURAN DAN PENGAMBILAN ELEMEN
@@ -36,7 +63,7 @@ document.getElementById("currentYear").textContent =
    2. DATA DAN PENYIMPANAN
 ========================================= */
 
-let messages = loadMessages();
+let messages = [];
 let toastTimer = null;
 
 const allowedCategories = [
@@ -71,12 +98,8 @@ const allowedStickers = [
 /* Membaca data yang tersimpan di browser */
 
 function loadMessages() {
-    try {
-        const savedData = localStorage.getItem(STORAGE_KEY);
-
-        if (!savedData) {
-            return [];
-        }
+    return [];
+}
 
         const parsedData = JSON.parse(savedData);
 
@@ -116,39 +139,15 @@ function loadMessages() {
                     : 0,
                 liked: item.liked === true
             }))
-            .slice(0, MAX_MESSAGES);
-    } catch (error) {
-        console.error("Gagal membaca penyimpanan:", error);
-        return [];
-    }
-}
+            .slice(0, MAX_MESSAGES); 
 
 
 /* Menyimpan semua pesan ke localStorage */
 
 function saveMessages() {
-    try {
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(messages)
-        );
-
-        document.getElementById("storageInfo").textContent =
-            "Papan lokal · Browser ini";
-
-        return true;
-    } catch (error) {
-        console.error("Gagal menyimpan pesan:", error);
-
-        document.getElementById("storageInfo").textContent =
-            "Penyimpanan tidak tersedia";
-
-        showToast(
-            "Penyimpanan gagal. Ruang browser mungkin penuh."
-        );
-
-        return false;
-    }
+     // Pesan sekarang disimpan melalui Firestore,
+    // bukan localStorage.
+    return true;
 }
 
 
@@ -225,64 +224,45 @@ function createMessageId() {
    5. MENGIRIM PESAN BARU
 ========================================= */
 
-form.addEventListener("submit", (event) => {
-    event.preventDefault();
+form.addEventListener("submit", async (event) => {
+     event.preventDefault();
 
     const anonymous = anonymousInput.checked;
-
     const name = anonymous
         ? "Anonim"
         : senderNameInput.value.trim();
 
     const message = messageTextInput.value.trim();
-
     const category = categoryInput.value;
 
     const selectedColor = document.querySelector(
         'input[name="cardColor"]:checked'
     );
 
-    const color = selectedColor
-        ? selectedColor.value
-        : "pink";
-
+    const color = selectedColor ? selectedColor.value : "pink";
     const sticker = stickerInput.value;
 
-    // Validasi nama.
     if (!anonymous && !name) {
         showToast("Isi nama atau aktifkan mode anonim.");
-        senderNameInput.focus();
         return;
     }
 
-    // Validasi panjang nama.
     if (name.length > 30) {
         showToast("Nama maksimal 30 karakter.");
         return;
     }
 
-    // Validasi pesan.
     if (message.length < 3 || message.length > 500) {
-        showToast(
-            "Pesan harus terdiri dari 3 sampai 500 karakter."
-        );
-        messageTextInput.focus();
+        showToast("Pesan harus terdiri dari 3 sampai 500 karakter.");
         return;
     }
 
-    // Pastikan semua pilihan sesuai daftar yang diizinkan.
-    if (!allowedCategories.includes(category)) {
-        showToast("Kategori pesan tidak valid.");
-        return;
-    }
-
-    if (!allowedColors.includes(color)) {
-        showToast("Warna kartu tidak valid.");
-        return;
-    }
-
-    if (!allowedStickers.includes(sticker)) {
-        showToast("Stiker tidak valid.");
+    if (
+        !allowedCategories.includes(category) ||
+        !allowedColors.includes(color) ||
+        !allowedStickers.includes(sticker)
+    ) {
+        showToast("Pilihan pesan tidak valid.");
         return;
     }
 
@@ -292,62 +272,49 @@ form.addEventListener("submit", (event) => {
     }
 
     if (messages.length >= MAX_MESSAGES) {
-        showToast(
-            "Papan mencapai batas 500 pesan. Hapus pesan lama dahulu."
-        );
+        showToast("Papan mencapai batas 500 pesan.");
         return;
     }
 
     const newMessage = {
-        id: createMessageId(),
-        name: name,
-        anonymous: anonymous,
-        category: category,
-        message: message,
-        color: color,
-        sticker: sticker,
+        name,
+        anonymous,
+        category,
+        message,
+        color,
+        sticker,
         date: new Date().toISOString(),
-        likes: 0,
-        liked: false
+        likes: 0
     };
 
-    // Simpan data lama agar bisa dikembalikan jika gagal.
-    const previousMessages = messages;
+    try {
+        await addDoc(collection(db, "messages"), newMessage);
 
-    messages = [newMessage, ...messages];
+        messageTextInput.value = "";
+        senderNameInput.value = "";
+        charCount.textContent = "0 / 500";
+        agreeRulesInput.checked = false;
 
-    if (!saveMessages()) {
-        messages = previousMessages;
-        return;
+        document.querySelector(
+            'input[name="cardColor"][value="pink"]'
+        ).checked = true;
+
+        stickerInput.value = "♡";
+        categoryInput.value = "Harapan";
+
+        anonymousInput.checked = true;
+        anonymousInput.dispatchEvent(new Event("change"));
+
+        showToast("Pesan berhasil dikirim ke Dear You ♡");
+
+        document.getElementById("papan").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    } catch (error) {
+        console.error("Gagal mengirim pesan:", error);
+        showToast("Pesan gagal dikirim. Periksa Firebase Rules.");
     }
-
-    // Kosongkan formulir setelah berhasil disimpan.
-    messageTextInput.value = "";
-    senderNameInput.value = "";
-    charCount.textContent = "0 / 500";
-    agreeRulesInput.checked = false;
-
-    document.querySelector(
-        'input[name="cardColor"][value="pink"]'
-    ).checked = true;
-
-    stickerInput.value = "♡";
-    categoryInput.value = "Harapan";
-
-    anonymousInput.checked = true;
-    anonymousInput.dispatchEvent(
-        new Event("change")
-    );
-
-    renderMessages();
-
-    showToast("Pesan berhasil ditambahkan. Terima kasih ♡");
-
-    // Arahkan pengunjung ke papan pesan.
-    document.getElementById("papan").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
 });
 
 
@@ -583,6 +550,29 @@ function renderMessages() {
     totalLikesElement.textContent =
         totalLikes.toLocaleString("id-ID");
 }
+// Membaca pesan dari Firebase secara realtime
+onSnapshot(
+    query(
+        collection(db, "messages"),
+        orderBy("date", "desc")
+    ),
+    (snapshot) => {
+        messages = snapshot.docs.map((document) => ({
+            id: document.id,
+            ...document.data(),
+            liked: false
+        }));
+
+        renderMessages();
+
+        document.getElementById("storageInfo").textContent =
+            "Papan online · Firebase";
+    },
+    (error) => {
+        console.error("Gagal membaca Firebase:", error);
+        showToast("Gagal memuat pesan dari Firebase.");
+    }
+);
 
 
 /* =========================================
